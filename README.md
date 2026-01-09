@@ -1,3 +1,7 @@
+## Live demo
+
+https://north-cloud-dashboard.vercel.app/
+
 ## Getting Started
 
 Copy and edit the .env file
