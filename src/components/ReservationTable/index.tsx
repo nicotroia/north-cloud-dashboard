@@ -215,7 +215,7 @@ export const ReservationsTable = ({ reservations }: ReservationsTableProps) => {
             </thead>
             <tbody>
               {displayedReservations.map((reservation, idx) => {
-                const savingsSign = reservation.mtdSavings >= 0 ? "+" : "";
+                const savingsSign = reservation.mtdSavings >= 0 ? "+" : "-";
 
                 return (
                   <tr
@@ -259,9 +259,18 @@ export const ReservationsTable = ({ reservations }: ReservationsTableProps) => {
                       </Text>
                     </td>
                     <td className="px-6 py-4">
-                      <Text as="span" size="sm" weight="medium">
+                      <Text
+                        as="span"
+                        size="sm"
+                        weight="medium"
+                        className={cx(
+                          reservation.mtdSavings >= 0
+                            ? "text-web-success"
+                            : "text-web-danger"
+                        )}
+                      >
                         {savingsSign}$
-                        {Math.abs(reservation.mtdSavings).toLocaleString()}
+                        {Math.abs(reservation.mtdSavings).toFixed(2)}
                       </Text>
                     </td>
                   </tr>

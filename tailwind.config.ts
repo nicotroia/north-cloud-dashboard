@@ -46,6 +46,7 @@ const config: Config = {
           primary: "var(--color-primary)",
           "primary-dim": "var(--color-primary-dim)",
           success: "var(--color-success)",
+          danger: "var(--color-danger)",
           readable: "var(--color-readable)",
           "readable-dim": "var(--color-readable-dim)",
           background: "var(--color-background)",

@@ -7,6 +7,7 @@
   --color-primary: #ad66da;
   --color-primary-dim: #d0a3ec;
   --color-success: #4caf50;
+  --color-danger: #e57373;
   --color-readable: #3c3c43;
   --color-readable-dim: #7c7c82;
   --color-content: #f5f5f5;
@@ -24,6 +25,7 @@ html.dark {
   --color-primary: #d591fe;
   --color-primary-dim: #75508c;
   --color-success: #43a065;
+  --color-danger: #962e3a;
   --color-readable: #d6d8e2;
   --color-readable-dim: #7a7d8c;
   --color-content: #1e2125;
