@@ -1,0 +1,29 @@
+.buttonReset {
+  -webkit-appearance: none;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+  line-height: normal;
+  margin: 0;
+  outline: none;
+  overflow: visible;
+  padding: 0;
+  text-align: inherit;
+  width: auto;
+
+  &::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+  }
+}
+
+.interactive {
+  @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-web-primary rounded-md;
+}
+
+.link {
+  @apply text-web-link hover:text-web-link-hover focus-visible:text-web-link-hover cursor-pointer hover:underline;
+}
