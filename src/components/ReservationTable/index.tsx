@@ -1,4 +1,6 @@
 import { useState, useMemo } from "react";
+import Fuse from "fuse.js";
+
 import { Reservation } from "@/types";
 import { Text } from "@/components/Text";
 import { cx } from "@/helpers";
@@ -18,6 +20,7 @@ export const ReservationsTable = ({ reservations }: ReservationsTableProps) => {
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [pageSize, setPageSize] = useState(20);
   const [isPending, setIsPending] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -28,10 +31,15 @@ export const ReservationsTable = ({ reservations }: ReservationsTableProps) => {
     }
   };
 
-  const sortedReservations = useMemo(() => {
-    if (!reservations) return [];
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
+  };
 
-    return [...reservations].sort((a, b) => {
+  const { displayedReservations, hasMore } = useMemo(() => {
+    if (!reservations) return { displayedReservations: [], hasMore: false };
+
+    // Sort
+    const sorted = [...reservations].sort((a, b) => {
       let aValue: any = a[sortField];
       let bValue: any = b[sortField];
 
@@ -44,13 +52,24 @@ export const ReservationsTable = ({ reservations }: ReservationsTableProps) => {
       if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
       return 0;
     });
-  }, [reservations, sortField, sortDirection]);
 
-  const displayedReservations = useMemo(() => {
-    return sortedReservations.slice(0, pageSize);
-  }, [sortedReservations, pageSize]);
+    // Filter
+    let filtered = sorted;
+    if (searchInput) {
+      const fuse = new Fuse(sorted, {
+        location: 0,
+        threshold: 0.3,
+        keys: ["type", "instance"],
+      });
+      filtered = fuse.search(searchInput).map((result) => result.item);
+    }
 
-  const hasMore = sortedReservations.length > pageSize;
+    // Paginate only when not searching
+    const displayed = searchInput ? filtered : filtered.slice(0, pageSize);
+    const hasMore = !searchInput && filtered.length > pageSize;
+
+    return { displayedReservations: displayed, hasMore };
+  }, [reservations, sortField, sortDirection, searchInput, pageSize]);
 
   const handleLoadMore = () => {
     setIsPending(true);
@@ -136,11 +155,20 @@ export const ReservationsTable = ({ reservations }: ReservationsTableProps) => {
           <Text as="h2" size="xl" variant="primary" leading="tight">
             Reservations & Savings Plans
           </Text>
+
+          <input
+            className={cx(
+              sharedStyles.interactive,
+              "mt-3 w-full px-3 py-1 border bg-web-content border-web-border focus:border-web-primary rounded-lg placeholder-web-readable-dim text-web-readable"
+            )}
+            placeholder="Search reservations..."
+            onChange={handleSearchInputChange}
+          />
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-web-border text-left">
+              <tr className="text-left">
                 <th className="px-6 py-3">
                   <button
                     onClick={() => handleSort("type")}
@@ -221,7 +249,7 @@ export const ReservationsTable = ({ reservations }: ReservationsTableProps) => {
                   <tr
                     key={reservation.id}
                     className={cx(
-                      idx === displayedReservations?.length - 1
+                      idx === displayedReservations.length - 1
                         ? ""
                         : "border-b border-web-border"
                     )}
